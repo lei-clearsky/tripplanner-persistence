@@ -5,6 +5,8 @@ var express = require('express'),
 
 var app = express();
 
+var days = require('.routes/days');
+
 // set up rendering with swig
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
@@ -27,6 +29,7 @@ app.use(express.static(__dirname + '/public'));
 
 // serve root
 app.get('/', require('./routes'));
+app.use('/days', days);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
