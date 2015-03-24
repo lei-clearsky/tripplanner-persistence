@@ -1,19 +1,28 @@
-$(document).ready(function() {
-  $.ajax({
-    type: 'get',
-    url: '/days',
-    success: function (responseData) {
-      var days = responseData;
-      console.log(days);
-    }
-  });
-});
-
 //var days = [];
 var currentDay;
 
 var $addDay = $('#add-day')
 var $dayTitle = $('#day-title span:first')
+
+$(document).ready(function() {
+  console.log('all days');
+  $.ajax({
+    type: 'get',
+    url: '/days',
+    success: function (responseData) {
+      console.log('all days');
+      var days = responseData;
+      days.forEach(function(day){
+        var newDayBtn = templates.get('day-btn')
+        .text(day.number)
+        .insertBefore($addDay)
+        .on('click', function() {
+          switchCurrentDay(day, $(this))
+        })
+      });
+    }
+  });
+});
 
 var switchCurrentDay = function(day, $dayBtn) {
   // get current day data
@@ -47,16 +56,6 @@ var switchCurrentDay = function(day, $dayBtn) {
 }
 
 $addDay.on('click', function() {
-  //"model-y"
-  // var newDay = {
-  //   restaurants: [],
-  //   thingsToDo: [],
-  //   hotel: null,
-  //   dayNum: days.length + 1
-  // }
-
-  // days.push(newDay)
-
   // create a new day
   $.post('/days', function(newDay) {
     console.log('POST response data', newDay)

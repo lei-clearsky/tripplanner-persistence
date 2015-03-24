@@ -30,16 +30,52 @@ var addItemToList = function(type, activity) {
 	if(!activity) return;
 
 	// var list = getListByType(type);
-	var list = $('#itinerary .hotel-list');
-	// console.log('list', list);
-	var template = templates.get('itinerary-item')
-	  .appendTo(list)
-	console.log('activity', activity);
-	template.find('.title')
-	 .text(activity.name)
-	 .attr('id', activity._id);
+	// var list = $('#itinerary .hotel-list');
+	var list;
+	
+	// var template = templates.get('itinerary-item')
+	//   .appendTo(list);
 
-	drawLocation(activity.place[0].location, iconTypeMap[type])
+	// template.find('.title')
+	//  .text(activity.name)
+	//  .attr('id', activity._id);
+
+	// drawLocation(activity.place[0].location, iconTypeMap[type])
+
+	if (type == 'hotel'){
+		list = $('#itinerary .hotel-list');
+
+		var template = templates.get('itinerary-item')
+	  		.appendTo(list);
+
+		template.find('.title')
+		 .text(activity.name)
+		 .attr('id', activity._id);
+
+		drawLocation(activity.place[0].location, iconTypeMap[type])
+	} else if (type == 'restaurants') {
+		list = $('#itinerary .restaurant-list');
+
+		var template = templates.get('itinerary-item')
+	  		.appendTo(list);
+
+		template.find('.title')
+		 .text(activity.name)
+		 .attr('id', activity._id);
+
+		drawLocation(activity.place[0].location, iconTypeMap[type])		
+	} else if (type == 'thingsToDo') {
+		list = $('#itinerary .thingsToDo-list');
+
+		var template = templates.get('itinerary-item')
+	  		.appendTo(list);
+	  		
+		template.find('.title')
+		 .text(activity.name)
+		 .attr('id', activity._id);
+
+		drawLocation(activity.place[0].location, iconTypeMap[type])		
+	}
 }
 
 $('.add-activity').on('click', function() {
@@ -58,10 +94,14 @@ $('.add-activity').on('click', function() {
     	url: '/days/' + currentDay[0].number + '/' + type,
     	data: { id: id },
     	success: function(responseData){
-    		console.log('success!');
-    		console.log(type);
     		console.log('success! ', responseData[0][type]);
-    		addItemToList(type, responseData[0][type])
+    		if(type === "hotel")
+    			addItemToList(type, responseData[0][type])
+    		else if (type === "restaurants" || type === "thingsToDo"){
+    			var lastIndex = responseData[0][type].length - 1;
+    			addItemToList(type, responseData[0][type][lastIndex])
+    		}
+    			
     	}
 	});
 

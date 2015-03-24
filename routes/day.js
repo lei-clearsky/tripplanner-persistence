@@ -5,14 +5,14 @@ var models = require('../models');
 // get all days
 router.get('/', function(req, res, next) {
   models.Day
-        .find({})
-        .populate('hotel restaurants thingsToDo', function(err, popDays) {
+        .find()
+        .populate('hotel restaurants thingsToDo') // why .populate('...', function(){...}) doesn't work??
+        .exec(function(err, popDays) {
+          console.log('get /days');
           console.log(popDays);
           res.send(popDays);
-          // res.render('index', {
-          //   all_days: popDays
-          // });
         });
+
 });
 
 // post a new day
@@ -40,30 +40,7 @@ router.get('/:id', function (req, res, next) {
           console.log(popDay);
           res.send(popDay);
         });
-
-        // .populate('hotel restaurants thingsToDo', function(err, popDay) {
-        //   console.log(popDay);
-        //   res.send(popDay);
-
-        //   // res.render('index', {
-        //   //   popDay: popDay
-        //   // });
-        // });
   });
-  // models.Hotel.find({}).exec(function (err, hotels) {
-  //   models.Restaurant.find({}).exec(function (err, restaurants) {
-  //     models.ThingToDo.find({}).exec(function (err, thingsToDo) {
-  //       models.Day.findOrCreate({number: req.params.num}).exec(function (err, day) {
-  //         res.render('index', {
-  //           all_hotels: hotels,
-  //           all_restaurants: restaurants,
-  //           all_things_to_do: thingsToDo, 
-  //           day: day
-  //         });
-  //       })
-  //     });
-  //   });
-  // });
 
 // delete one day
 router.delete('/:id', function (req, res, next) {
@@ -93,16 +70,38 @@ attractionRouter.delete('/hotel', function (req, res, next) {
     
 });
 // creates a reference to a restaurant
-attractionRouter.post('/restaurants', function (req, res, next) {
-    
+router.post('/:id/restaurants', function (req, res, next) {
+  var id = req.params.id;
+  models.Day
+        .update({number: id}, {$push: {restaurants: req.body.id}}, function(err, cb) {
+          models.Day
+                .find({number: id})
+                .populate('restaurants')
+                .exec(function(err, popDoc) {
+                  console.log('add restaurant');
+                  console.log(popDoc);
+                  res.send(popDoc);
+                });
+        })
 });
 // deletes a reference to a restaurant
 attractionRouter.delete('/restaurant/:id', function (req, res, next) {
     
 });
 // creates a reference to a thing to do
-attractionRouter.post('/thingsToDo', function (req, res, next) {
-    
+router.post('/:id/thingsToDo', function (req, res, next) {
+  var id = req.params.id;
+  models.Day
+        .update({number: id}, {$push: {thingsToDo: req.body.id}}, function(err, cb) {
+          models.Day
+                .find({number: id})
+                .populate('thingsToDo')
+                .exec(function(err, popDoc) {
+                  console.log('add thingsToDo');
+                  console.log(popDoc);
+                  res.send(popDoc);
+                });
+        })    
 });
 // deletes a reference to a thing to do
 attractionRouter.delete('/thingsToDo/:id', function (req, res, next) {
