@@ -31,15 +31,15 @@ var addItemToList = function(type, activity) {
 
 	// var list = getListByType(type);
 	var list = $('#itinerary .hotel-list');
-	console.log('list', list);
+	// console.log('list', list);
 	var template = templates.get('itinerary-item')
 	  .appendTo(list)
-	console.log(template);
+	console.log('activity', activity);
 	template.find('.title')
-	 .text(activity[0].hotel.name)
-	 .attr('id', activity[0].hotel._id);
+	 .text(activity.name)
+	 .attr('id', activity._id);
 
-	drawLocation(activity[0].hotel.place[0].location, iconTypeMap[type])
+	drawLocation(activity.place[0].location, iconTypeMap[type])
 }
 
 $('.add-activity').on('click', function() {
@@ -49,14 +49,19 @@ $('.add-activity').on('click', function() {
 	var $select = $(this).siblings('select')
 	var type = $(this).attr('data-type')
 	var id = $select.val()
+	
+	if(type === "hotels")
+		type = "hotel"
 
 	$.ajax({ 
     	type: 'POST',
-    	url: '/days/' + currentDay[0].number + '/hotel',
+    	url: '/days/' + currentDay[0].number + '/' + type,
     	data: { id: id },
     	success: function(responseData){
     		console.log('success!');
-    		addItemToList(type, responseData)
+    		console.log(type);
+    		console.log('success! ', responseData[0][type]);
+    		addItemToList(type, responseData[0][type])
     	}
 	});
 

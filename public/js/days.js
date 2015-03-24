@@ -4,6 +4,7 @@ $(document).ready(function() {
     url: '/days',
     success: function (responseData) {
       var days = responseData;
+      console.log(days);
     }
   });
 });
@@ -17,9 +18,10 @@ var $dayTitle = $('#day-title span:first')
 var switchCurrentDay = function(day, $dayBtn) {
   // get current day data
   $.get('/days/' + day.number, function(currentDayData) {
+    //console.log('day ', currentDayData[0].hotel);
     clearMap()
-    console.log(currentDayData);
-    currentDay = currentDayData
+    currentDay = currentDayData;
+    console.log('day ', currentDay[0]);
     $dayTitle.text('Day ' + currentDay[0].number)
     $('.day-btn').removeClass('current-day')
     $dayBtn.addClass('current-day')
@@ -28,15 +30,19 @@ var switchCurrentDay = function(day, $dayBtn) {
     $("#itinerary").html(templates.get('itinerary'))
 
     // loop through the model, and call `addItemToList` once for each activity
-    addItemToList('hotel', currentDay.hotel)
+    addItemToList('hotel', currentDay[0].hotel)
 
-    currentDay.restaurants.forEach(function(r) {
-      addItemToList('restaurants', r)
-    })
+    if (currentDay[0].restaurants){
+      currentDay[0].restaurants.forEach(function(r) {
+        addItemToList('restaurants', r)
+      })
+    }
 
-    currentDay.thingsToDo.forEach(function(t) {
-      addItemToList('thingsToDo', t)
-    })
+    if (currentDay[0].thingsToDo){
+      currentDay[0].thingsToDo.forEach(function(t) {
+        addItemToList('thingsToDo', t)
+      })
+    }
   })
 }
 
