@@ -6,6 +6,18 @@ var express = require('express'),
 var app = express();
 
 var days = require('.routes/days');
+=======
+var bodyParser = require('body-parser')
+
+var app = express();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
+var days = require('./routes/day');
 
 // set up rendering with swig
 app.set('views', __dirname + '/views');

@@ -28,6 +28,7 @@ var getListByType = function(type) {
 
 var addItemToList = function(type, activity) {
 	if(!activity) return;
+<<<<<<< HEAD
 	var list = getListByType(type)
 
 	var template = templates.get('itinerary-item')
@@ -38,6 +39,56 @@ var addItemToList = function(type, activity) {
 	 .text(activity.name)
 
 	drawLocation(activity.place[0].location, iconTypeMap[type])
+=======
+
+	// var list = getListByType(type);
+	// var list = $('#itinerary .hotel-list');
+	var list;
+	
+	// var template = templates.get('itinerary-item')
+	//   .appendTo(list);
+
+	// template.find('.title')
+	//  .text(activity.name)
+	//  .attr('id', activity._id);
+
+	// drawLocation(activity.place[0].location, iconTypeMap[type])
+
+	if (type == 'hotel'){
+		list = $('#itinerary .hotel-list');
+
+		var template = templates.get('itinerary-item')
+	  		.appendTo(list);
+
+		template.find('.title')
+		 .text(activity.name)
+		 .attr('id', activity._id);
+
+		drawLocation(activity.place[0].location, iconTypeMap[type])
+	} else if (type == 'restaurants') {
+		list = $('#itinerary .restaurant-list');
+
+		var template = templates.get('itinerary-item')
+	  		.appendTo(list);
+
+		template.find('.title')
+		 .text(activity.name)
+		 .attr('id', activity._id);
+
+		drawLocation(activity.place[0].location, iconTypeMap[type])		
+	} else if (type == 'thingsToDo') {
+		list = $('#itinerary .thingsToDo-list');
+
+		var template = templates.get('itinerary-item')
+	  		.appendTo(list);
+	  		
+		template.find('.title')
+		 .text(activity.name)
+		 .attr('id', activity._id);
+
+		drawLocation(activity.place[0].location, iconTypeMap[type])		
+	}
+>>>>>>> a9d55d64761de66b989973f8d9617042b9d184a6
 }
 
 $('.add-activity').on('click', function() {
@@ -47,6 +98,7 @@ $('.add-activity').on('click', function() {
 	var $select = $(this).siblings('select')
 	var type = $(this).attr('data-type')
 	var id = $select.val()
+<<<<<<< HEAD
 
 	var activity = getActivity(type, id)
 	if(type === "hotels"){
@@ -63,6 +115,48 @@ $('.add-activity').on('click', function() {
 
 })
 
+=======
+	
+	if(type === "hotels")
+		type = "hotel"
+
+	$.ajax({ 
+    	type: 'POST',
+    	url: '/days/' + currentDay[0].number + '/' + type,
+    	data: { id: id },
+    	success: function(responseData){
+    		console.log('success! ', responseData[0][type]);
+    		if(type === "hotel")
+    			addItemToList(type, responseData[0][type])
+    		else if (type === "restaurants" || type === "thingsToDo"){
+    			var lastIndex = responseData[0][type].length - 1;
+    			addItemToList(type, responseData[0][type][lastIndex])
+    		}
+    			
+    	}
+	});
+
+	// var activity = getActivity(type, id)
+	// if(type === "hotels"){
+	// 	type = "hotel"
+	// 	currentDay.hotel = activity	
+	// } else {
+	// 	currentDay[type].push(activity)	
+	// }
+
+	//views
+	
+	// addItemToList(type, activity)
+
+})
+
+$('.remove').on('click', function() {
+	// remove activity from model
+
+	// remove from view
+});
+
+>>>>>>> a9d55d64761de66b989973f8d9617042b9d184a6
 
 
 

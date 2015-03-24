@@ -1,55 +1,74 @@
-var days = [];
+//var days = [];
 var currentDay;
-
-
-
 
 var $addDay = $('#add-day')
 var $dayTitle = $('#day-title span:first')
 
+$(document).ready(function() {
+  console.log('all days');
+  $.ajax({
+    type: 'get',
+    url: '/days',
+    success: function (responseData) {
+      console.log('all days');
+      var days = responseData;
+      days.forEach(function(day){
+        var newDayBtn = templates.get('day-btn')
+        .text(day.number)
+        .insertBefore($addDay)
+        .on('click', function() {
+          switchCurrentDay(day, $(this))
+        })
+      });
+    }
+  });
+});
+
 var switchCurrentDay = function(day, $dayBtn) {
-  clearMap()
-  currentDay = day
-  $dayTitle.text('Day ' + day.dayNum)
-  $('.day-btn').removeClass('current-day')
-  $dayBtn.addClass('current-day')
+  // get current day data
+  $.get('/days/' + day.number, function(currentDayData) {
+    //console.log('day ', currentDayData[0].hotel);
+    clearMap()
+    currentDay = currentDayData;
+    console.log('day ', currentDay[0]);
+    $dayTitle.text('Day ' + currentDay[0].number)
+    $('.day-btn').removeClass('current-day')
+    $dayBtn.addClass('current-day')
 
-  // wipe current itenerary and replace with a clone of a new template
-  $("#itinerary").html(templates.get('itinerary'))
+    // wipe current itenerary and replace with a clone of a new template
+    $("#itinerary").html(templates.get('itinerary'))
 
-  // loop through the model, and call `addItemToList` once for each activity
-  addItemToList('hotel', currentDay.hotel)
+    // loop through the model, and call `addItemToList` once for each activity
+    addItemToList('hotel', currentDay[0].hotel)
 
-  currentDay.restaurants.forEach(function(r) {
-    addItemToList('restaurants', r)
-  })
+    if (currentDay[0].restaurants){
+      currentDay[0].restaurants.forEach(function(r) {
+        addItemToList('restaurants', r)
+      })
+    }
 
-  currentDay.thingsToDo.forEach(function(t) {
-    addItemToList('thingsToDo', t)
+    if (currentDay[0].thingsToDo){
+      currentDay[0].thingsToDo.forEach(function(t) {
+        addItemToList('thingsToDo', t)
+      })
+    }
   })
 }
 
 $addDay.on('click', function() {
-  //"model-y"
-  var newDay = {
-    restaurants: [],
-    thingsToDo: [],
-    hotel: null,
-    dayNum: days.length + 1
-  }
+  // create a new day
+  $.post('/days', function(newDay) {
+    console.log('POST response data', newDay)
 
-  days.push(newDay)
+    var newDayBtn = templates.get('day-btn')
+      .text(newDay.number)
+      .insertBefore($addDay)
+      .on('click', function() {
+        switchCurrentDay(newDay, $(this))
+      })
 
-
-  var newDayBtn = templates.get('day-btn')
-    .text(newDay.dayNum)
-    .insertBefore($addDay)
-    .on('click', function() {
-      switchCurrentDay(newDay, $(this))
-    })
-
-  switchCurrentDay(newDay, newDayBtn)
-})
-
+    switchCurrentDay(newDay, newDayBtn)
+  })
+});
 
 

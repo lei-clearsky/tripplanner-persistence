@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var findOrCreate = require('mongoose-findorcreate');
 
 mongoose.connect('mongodb://localhost/tripplanner');
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
@@ -39,7 +38,11 @@ var daySchema = new mongoose.Schema({
 	thingsToDo: [{type: mongoose.Schema.Types.ObjectId, ref: 'ThingToDo'}]
 })
 
+<<<<<<< HEAD
 daySchema.plugin(findOrCreate);
+=======
+//daySchema.plugin(findOrCreate);
+>>>>>>> a9d55d64761de66b989973f8d9617042b9d184a6
 
 module.exports = {
 	Place: mongoose.model('Place', placeSchema),
