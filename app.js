@@ -4,9 +4,6 @@ var express = require('express'),
 	sassMiddleware = require('node-sass-middleware');
 
 var app = express();
-
-var days = require('.routes/days');
-=======
 var bodyParser = require('body-parser')
 
 var app = express();

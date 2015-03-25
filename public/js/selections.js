@@ -28,23 +28,7 @@ var getListByType = function(type) {
 
 var addItemToList = function(type, activity) {
 	if(!activity) return;
-<<<<<<< HEAD
-	var list = getListByType(type)
-
-	var template = templates.get('itinerary-item')
-	  .appendTo(list)
-
-
-	template.find('.title')
-	 .text(activity.name)
-
-	drawLocation(activity.place[0].location, iconTypeMap[type])
-=======
-
-	// var list = getListByType(type);
-	// var list = $('#itinerary .hotel-list');
-	var list;
-	
+	var list = getListByType(type);
 	// var template = templates.get('itinerary-item')
 	//   .appendTo(list);
 
@@ -55,7 +39,7 @@ var addItemToList = function(type, activity) {
 	// drawLocation(activity.place[0].location, iconTypeMap[type])
 
 	if (type == 'hotel'){
-		list = $('#itinerary .hotel-list');
+		// list = $('#itinerary .hotel-list');
 
 		var template = templates.get('itinerary-item')
 	  		.appendTo(list);
@@ -66,7 +50,7 @@ var addItemToList = function(type, activity) {
 
 		drawLocation(activity.place[0].location, iconTypeMap[type])
 	} else if (type == 'restaurants') {
-		list = $('#itinerary .restaurant-list');
+		// list = $('#itinerary .restaurant-list');
 
 		var template = templates.get('itinerary-item')
 	  		.appendTo(list);
@@ -77,7 +61,7 @@ var addItemToList = function(type, activity) {
 
 		drawLocation(activity.place[0].location, iconTypeMap[type])		
 	} else if (type == 'thingsToDo') {
-		list = $('#itinerary .thingsToDo-list');
+		// list = $('#itinerary .thingsToDo-list');
 
 		var template = templates.get('itinerary-item')
 	  		.appendTo(list);
@@ -88,7 +72,6 @@ var addItemToList = function(type, activity) {
 
 		drawLocation(activity.place[0].location, iconTypeMap[type])		
 	}
->>>>>>> a9d55d64761de66b989973f8d9617042b9d184a6
 }
 
 $('.add-activity').on('click', function() {
@@ -98,25 +81,7 @@ $('.add-activity').on('click', function() {
 	var $select = $(this).siblings('select')
 	var type = $(this).attr('data-type')
 	var id = $select.val()
-<<<<<<< HEAD
 
-	var activity = getActivity(type, id)
-	if(type === "hotels"){
-		type = "hotel"
-		currentDay.hotel = activity	
-	} else {
-		currentDay[type].push(activity)	
-	}
-
-
-	//views
-	
-	addItemToList(type, activity)
-
-})
-
-=======
-	
 	if(type === "hotels")
 		type = "hotel"
 
@@ -136,28 +101,41 @@ $('.add-activity').on('click', function() {
     	}
 	});
 
-	// var activity = getActivity(type, id)
-	// if(type === "hotels"){
-	// 	type = "hotel"
-	// 	currentDay.hotel = activity	
-	// } else {
-	// 	currentDay[type].push(activity)	
-	// }
-
-	//views
-	
-	// addItemToList(type, activity)
-
 })
 
-$('.remove').on('click', function() {
-	// remove activity from model
+// remove a day 
+// $('.remove').on('click', function() {
+
+// });
+
+
+// remove activity from model
+$('body').on('click', '.remove-btn', function() {
+
+		//models
+	//find the correct select
+	var $title = $(this).siblings('.title')
+	var type = $(this).parents().find('.list-group').attr('class').split(' ')[0];
+	var id = $title.attr('id');
 
 	// remove from view
+	$(this).parent().remove();
+
+	if(type === "hotel-list") {
+		type = "hotel"
+	} else if (type === "restaurant-list") {
+		type = "restaurants"
+	} else if (type==="thingsToDo-list") {
+		type = 'thingsToDo'; 
+	}
+
+	// remove from db 
+	$.ajax({ 
+    	type: 'DELETE',
+    	url: '/days/' + currentDay[0].number + '/' + type,
+    	data: { id: id }
+	});
 });
-
->>>>>>> a9d55d64761de66b989973f8d9617042b9d184a6
-
 
 
 
