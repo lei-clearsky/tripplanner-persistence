@@ -29,9 +29,10 @@ var getListByType = function(type) {
 var addItemToList = function(type, activity) {
 	if(!activity) return;
 
-	// var list = getListByType(type);
+	var list = getListByType(type);
+	console.log(list);
 	// var list = $('#itinerary .hotel-list');
-	var list;
+	// var list;
 	
 	// var template = templates.get('itinerary-item')
 	//   .appendTo(list);
@@ -42,8 +43,8 @@ var addItemToList = function(type, activity) {
 
 	// drawLocation(activity.place[0].location, iconTypeMap[type])
 
-	if (type == 'hotel'){
-		list = $('#itinerary .hotel-list');
+	if (type === 'hotel'){
+		//list = $('#itinerary .hotel-list');
 
 		var template = templates.get('itinerary-item')
 	  		.appendTo(list);
@@ -54,7 +55,7 @@ var addItemToList = function(type, activity) {
 
 		drawLocation(activity.place[0].location, iconTypeMap[type])
 	} else if (type == 'restaurants') {
-		list = $('#itinerary .restaurant-list');
+		//list = $('#itinerary .restaurant-list');
 
 		var template = templates.get('itinerary-item')
 	  		.appendTo(list);
@@ -65,7 +66,7 @@ var addItemToList = function(type, activity) {
 
 		drawLocation(activity.place[0].location, iconTypeMap[type])		
 	} else if (type == 'thingsToDo') {
-		list = $('#itinerary .thingsToDo-list');
+		//list = $('#itinerary .thingsToDo-list');
 
 		var template = templates.get('itinerary-item')
 	  		.appendTo(list);
@@ -91,12 +92,13 @@ $('.add-activity').on('click', function() {
 
 	$.ajax({ 
     	type: 'POST',
-    	url: '/days/' + currentDay[0].number + '/' + type,
+    	url: '/days/' + currentDay[0].number + '/' + type, // /days/1/hotel
     	data: { id: id },
     	success: function(responseData){
-    		console.log('success! ', responseData[0][type]);
-    		if(type === "hotel")
+    		// console.log('success! ', responseData);
+    		if(type === "hotel") {
     			addItemToList(type, responseData[0][type])
+    		}
     		else if (type === "restaurants" || type === "thingsToDo"){
     			var lastIndex = responseData[0][type].length - 1;
     			addItemToList(type, responseData[0][type][lastIndex])

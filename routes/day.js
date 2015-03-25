@@ -3,23 +3,20 @@ var attractionRouter = require('express').Router();
 var models = require('../models');
 
 // get all days
+// /days
 router.get('/', function(req, res, next) {
   models.Day
         .find()
-        .populate('hotel restaurants thingsToDo') // why .populate('...', function(){...}) doesn't work??
+        .populate('hotel restaurants thingsToDo') 
         .exec(function(err, popDays) {
-          console.log('get /days');
-          console.log(popDays);
           res.send(popDays);
         });
-
 });
 
 // post a new day
 router.post('/', function(req, res, next) {
   var countDays = models.Day.count({}, function(err, count){
     var newDayNum = count + 1;
-    console.log(count);
     var newDay = new models.Day({number: newDayNum, hotel: null});
     newDay.save();
     res.send(newDay);
@@ -30,14 +27,13 @@ router.post('/', function(req, res, next) {
 
 // when you click day buttons - whether new or old
 // get a particular day's activities
+// /days/1..
 router.get('/:id', function (req, res, next) {
   var id = req.params.id;
-  console.log('id', + id);
   models.Day
         .find({number: id})
         .populate('hotel restaurants thingsToDo')
         .exec(function(err, popDay) {
-          console.log(popDay);
           res.send(popDay);
         });
   });
@@ -49,6 +45,7 @@ router.delete('/:id', function (req, res, next) {
 
 router.use('/:id', attractionRouter);
 
+
 // POST /days/:id/hotel
 // creates a reference to the hotel
 router.post('/:id/hotel', function (req, res, next) {
@@ -59,13 +56,12 @@ router.post('/:id/hotel', function (req, res, next) {
                 .find({number: id})
                 .populate('hotel')
                 .exec(function(err, popDoc) {
-                  console.log('add hotel');
-                  console.log(popDoc);
                   res.send(popDoc);
                 });
         })
 });
 // deletes the reference of the hotel
+// days/1/hotel
 attractionRouter.delete('/hotel', function (req, res, next) {
     
 });
@@ -78,8 +74,6 @@ router.post('/:id/restaurants', function (req, res, next) {
                 .find({number: id})
                 .populate('restaurants')
                 .exec(function(err, popDoc) {
-                  console.log('add restaurant');
-                  console.log(popDoc);
                   res.send(popDoc);
                 });
         })
@@ -97,8 +91,6 @@ router.post('/:id/thingsToDo', function (req, res, next) {
                 .find({number: id})
                 .populate('thingsToDo')
                 .exec(function(err, popDoc) {
-                  console.log('add thingsToDo');
-                  console.log(popDoc);
                   res.send(popDoc);
                 });
         })    

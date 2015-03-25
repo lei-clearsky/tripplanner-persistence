@@ -5,12 +5,10 @@ var $addDay = $('#add-day')
 var $dayTitle = $('#day-title span:first')
 
 $(document).ready(function() {
-  console.log('all days');
   $.ajax({
     type: 'get',
     url: '/days',
     success: function (responseData) {
-      console.log('all days');
       var days = responseData;
       days.forEach(function(day){
         var newDayBtn = templates.get('day-btn')
@@ -27,10 +25,8 @@ $(document).ready(function() {
 var switchCurrentDay = function(day, $dayBtn) {
   // get current day data
   $.get('/days/' + day.number, function(currentDayData) {
-    //console.log('day ', currentDayData[0].hotel);
     clearMap()
     currentDay = currentDayData;
-    console.log('day ', currentDay[0]);
     $dayTitle.text('Day ' + currentDay[0].number)
     $('.day-btn').removeClass('current-day')
     $dayBtn.addClass('current-day')
@@ -58,8 +54,6 @@ var switchCurrentDay = function(day, $dayBtn) {
 $addDay.on('click', function() {
   // create a new day
   $.post('/days', function(newDay) {
-    console.log('POST response data', newDay)
-
     var newDayBtn = templates.get('day-btn')
       .text(newDay.number)
       .insertBefore($addDay)
