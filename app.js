@@ -3,6 +3,7 @@ var express = require('express'),
 	swig = require('swig'),
 	sassMiddleware = require('node-sass-middleware');
 
+var app = express();
 var bodyParser = require('body-parser')
 
 var app = express();

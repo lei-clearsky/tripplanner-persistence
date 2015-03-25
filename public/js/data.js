@@ -19,4 +19,3 @@ all_things_to_do.forEach(function(t) {
 var getActivity = function(type, id) {
 	return data[type][id];
 }
-

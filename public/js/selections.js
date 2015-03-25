@@ -30,10 +30,6 @@ var addItemToList = function(type, activity) {
 	if(!activity) return;
 
 	var list = getListByType(type);
-	console.log(list);
-	// var list = $('#itinerary .hotel-list');
-	// var list;
-	
 	// var template = templates.get('itinerary-item')
 	//   .appendTo(list);
 
@@ -86,7 +82,7 @@ $('.add-activity').on('click', function() {
 	var $select = $(this).siblings('select')
 	var type = $(this).attr('data-type')
 	var id = $select.val()
-	
+
 	if(type === "hotels")
 		type = "hotel"
 
@@ -107,27 +103,41 @@ $('.add-activity').on('click', function() {
     	}
 	});
 
-	// var activity = getActivity(type, id)
-	// if(type === "hotels"){
-	// 	type = "hotel"
-	// 	currentDay.hotel = activity	
-	// } else {
-	// 	currentDay[type].push(activity)	
-	// }
-
-	//views
-	
-	// addItemToList(type, activity)
-
 })
 
-$('.remove').on('click', function() {
-	// remove activity from model
+// remove a day 
+// $('.remove').on('click', function() {
+
+// });
+
+
+// remove activity from model
+$('body').on('click', '.remove-btn', function() {
+
+		//models
+	//find the correct select
+	var $title = $(this).siblings('.title')
+	var type = $(this).parents().find('.list-group').attr('class').split(' ')[0];
+	var id = $title.attr('id');
 
 	// remove from view
+	$(this).parent().remove();
+
+	if(type === "hotel-list") {
+		type = "hotel"
+	} else if (type === "restaurant-list") {
+		type = "restaurants"
+	} else if (type==="thingsToDo-list") {
+		type = 'thingsToDo'; 
+	}
+
+	// remove from db 
+	$.ajax({ 
+    	type: 'DELETE',
+    	url: '/days/' + currentDay[0].number + '/' + type,
+    	data: { id: id }
+	});
 });
-
-
 
 
 

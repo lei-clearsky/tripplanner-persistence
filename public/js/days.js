@@ -66,4 +66,3 @@ $addDay.on('click', function() {
 });
 
 
-

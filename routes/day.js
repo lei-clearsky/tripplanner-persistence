@@ -1,7 +1,10 @@
 var router = require('express').Router();
-var attractionRouter = require('express').Router();
+var attractionRouter = require('express').Router({ mergeParams: true });
 var models = require('../models');
 
+router.use('/:id', attractionRouter);
+
+// var day = models.Day.find(); 
 // get all days
 // /days
 router.get('/', function(req, res, next) {
@@ -22,7 +25,6 @@ router.post('/', function(req, res, next) {
     res.send(newDay);
     //res.redirect('/days/' + newDayNum);
   });
-  
 });
 
 // when you click day buttons - whether new or old
@@ -40,15 +42,17 @@ router.get('/:id', function (req, res, next) {
 
 // delete one day
 router.delete('/:id', function (req, res, next) {
-
+  var id = req.params.id;
+  models.Day.remove({number: id}, function (err) {
+    console.log(err);
+  });
 });
 
-router.use('/:id', attractionRouter);
 
 
 // POST /days/:id/hotel
 // creates a reference to the hotel
-router.post('/:id/hotel', function (req, res, next) {
+attractionRouter.post('/hotel', function (req, res, next) {
   var id = req.params.id;
   models.Day
         .update({number: id}, {$set: {hotel: req.body.id}}, function(err, cb) {
@@ -60,13 +64,26 @@ router.post('/:id/hotel', function (req, res, next) {
                 });
         })
 });
+
 // deletes the reference of the hotel
 // days/1/hotel
 attractionRouter.delete('/hotel', function (req, res, next) {
-    
+  var id = req.params.id;
+  models.Day
+        .update({number: id}, {$set: {hotel: null}}, function(err, cb) {
+          models.Day
+                .find({number: id})
+                // .populate('hotel')
+                .exec(function(err, popDoc) {
+                  console.log('delete hotel');
+                  console.log(popDoc);
+                  res.send(popDoc);
+                });
+        })
 });
+
 // creates a reference to a restaurant
-router.post('/:id/restaurants', function (req, res, next) {
+attractionRouter.post('/restaurants', function (req, res, next) {
   var id = req.params.id;
   models.Day
         .update({number: id}, {$push: {restaurants: req.body.id}}, function(err, cb) {
@@ -82,8 +99,9 @@ router.post('/:id/restaurants', function (req, res, next) {
 attractionRouter.delete('/restaurant/:id', function (req, res, next) {
     
 });
+
 // creates a reference to a thing to do
-router.post('/:id/thingsToDo', function (req, res, next) {
+attractionRouter.post('/thingsToDo', function (req, res, next) {
   var id = req.params.id;
   models.Day
         .update({number: id}, {$push: {thingsToDo: req.body.id}}, function(err, cb) {
@@ -95,6 +113,7 @@ router.post('/:id/thingsToDo', function (req, res, next) {
                 });
         })    
 });
+
 // deletes a reference to a thing to do
 attractionRouter.delete('/thingsToDo/:id', function (req, res, next) {
     
@@ -108,4 +127,3 @@ attractionRouter.delete('/thingsToDo/:id', function (req, res, next) {
 // }); 
 
 module.exports = router; 
-
