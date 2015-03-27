@@ -17,12 +17,4 @@
 		</div>
 	</div>
 
-	<script>
-	{% autoescape false %}
-	var all_hotels = {{ all_hotels | json }};
-	var all_restaurants = {{ all_restaurants | json }};
-	var all_things_to_do = {{ all_things_to_do | json }};
-	{% endautoescape %}
-	</script>
-
 {% endblock %}
