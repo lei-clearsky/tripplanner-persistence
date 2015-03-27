@@ -38,7 +38,7 @@ router.get('/:id', function (req, res, next) {
         .find({number: id})
         .populate('hotel restaurants thingsToDo')
         .exec(function(err, popDay) {
-          console.log(popDay);
+          // console.log(popDay);
           res.send(popDay);
         });
   });
@@ -100,9 +100,21 @@ attractionRouter.post('/restaurants', function (req, res, next) {
                 });
         })
 });
+
 // deletes a reference to a restaurant
-attractionRouter.delete('/restaurant/:id', function (req, res, next) {
-    
+attractionRouter.delete('/restaurants', function (req, res, next) {
+  var id = req.params.id; 
+  models.Day
+        .update({number: id}, {$pull : {restaurants: req.body.id}}, function (err, cb) {
+          if (err) return next(err);
+          console.log('callback', cb);
+          models.Day
+                .find({number: id})
+                .exec(function (err, popDoc) {
+                  console.log(popDoc);
+                  res.send(popDoc);
+                })
+        })
 });
 
 // creates a reference to a thing to do
@@ -122,8 +134,19 @@ attractionRouter.post('/thingsToDo', function (req, res, next) {
 });
 
 // deletes a reference to a thing to do
-attractionRouter.delete('/thingsToDo/:id', function (req, res, next) {
-    
+attractionRouter.delete('/thingsToDo', function (req, res, next) {
+  var id = req.params.id; 
+  models.Day
+        .update({number: id}, {$pull : {thingsToDo: req.body.id}}, function (err, cb) {
+          if (err) return next(err);
+          console.log('callback', cb);
+          models.Day
+                .find({number: id})
+                .exec(function (err, popDoc) {
+                  console.log(popDoc);
+                  res.send(popDoc);
+                })
+        })
 });
 
 // when you add activity from control panel 

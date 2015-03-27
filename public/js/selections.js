@@ -104,18 +104,26 @@ $('.add-activity').on('click', function() {
 })
 
 // remove a day 
-// $('.remove').on('click', function() {
+$('.remove').on('click', function() {
+	var $dayToRemove = $('.current-day');
+	var $prevDay = $('.current-day').prev(); 
+	$dayToRemove.remove();
+	$prevDay.trigger('click');
 
-// });
+	$.ajax({
+		type: 'DELETE',
+		url: '/days/' + currentDay[0].number
+	})
+});
 
 
 // remove activity from model
 $('body').on('click', '.remove-btn', function() {
 
-		//models
+	//models'
 	//find the correct select
 	var $title = $(this).siblings('.title')
-	var type = $(this).parents().find('.list-group').attr('class').split(' ')[0];
+	var type = $(this).closest('ul').attr('class').split(' ')[0];
 	var id = $title.attr('id');
 
 	// remove from view
